@@ -6,7 +6,7 @@ on:
     - cron: '0 18 * * *'
   push:
     branches:
-      - master
+      - main
 
 jobs:
   update:
@@ -46,7 +46,7 @@ jobs:
         git config user.name "github-actions[bot]"
         git add -A
         git commit -m "Updated data for ${steps.current-time.outputs.formattedTime}"
-        git push origin master
+        git push origin main
 
     - name: Verify commit and push
       run: git log -1

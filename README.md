@@ -16,7 +16,7 @@ The data is organized into folders by year, and within each year, the data is fu
 
 Each CSV file contains the following columns:
 - **Symbol**: The ticker symbol of the stock.
-- **Date**: The date of the data entry.
+- **Timestamp**: The date of the data entry.
 - **Open**: The opening price of the stock on that day.
 - **High**: The highest price of the stock on that day.
 - **Low**: The lowest price of the stock on that day.
@@ -26,6 +26,6 @@ Each CSV file contains the following columns:
 Example of a CSV file:
 
 ```csv
-Symbol,Date,Open,High,Low,Close,Volume
+Symbol,Timestamp,Open,High,Low,Close,Volume
 TCS,20160101,2300,2345,2295,2320,50000
 INFY,20160101,1150,1180,1145,1165,30000
