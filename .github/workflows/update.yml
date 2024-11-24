@@ -1,0 +1,52 @@
+name: Update Equity Data
+
+on:
+  schedule:
+    # This runs at 6 PM UTC (11:30 PM IST)
+    - cron: '0 18 * * *'
+  push:
+    branches:
+      - master
+
+jobs:
+  update:
+    name: Update today's equity data
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get current date
+      uses: josStorer/get-current-time@v2
+      id: current-time
+      with:
+        format: "YYYYMMDD"
+        timezone: 'Asia/Kolkata'
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: 'pypy3.9'
+
+    - name: Install dependencies from requirements.txt
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run data update script
+      run: |
+        python3 get_todays_date.py
+
+    - name: Commit changes
+      run: |
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config user.name "github-actions[bot]"
+        git add -A
+        git commit -m "Updated data for ${steps.current-time.outputs.formattedTime}"
+        git push origin master
+
+    - name: Verify commit and push
+      run: git log -1
