@@ -2,8 +2,8 @@ name: Update Equity Data
 
 on:
   schedule:
-    # This runs at 6 PM UTC (11:30 PM IST)
-    - cron: '0 18 * * *'
+    # This runs at 6 PM UTC (11:30 PM IST) on weekdays (Monday to Friday)
+    - cron: '0 18 * * 1-5'
   push:
     branches:
       - main
