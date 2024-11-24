@@ -38,26 +38,26 @@ jobs:
 
     - name: Download and extract data file
       run: |
-        # Try to download the file
+        # Define the file URL and path
         FILE_URL="https://archives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_${{ steps.current-time.outputs.formattedTime }}_F_0000.csv.zip"
         FILE_PATH="data/BhavCopy_${{ steps.current-time.outputs.formattedTime }}.zip"
         
         echo "Attempting to download file: $FILE_URL"
 
-        # Download the file and check if the download is successful
+        # Attempt to download the file
         curl --fail --silent --show-error --output $FILE_PATH $FILE_URL
         if [ $? -ne 0 ]; then
-          echo "Error downloading and extracting the file for ${{ steps.current-time.outputs.formattedTime }}. Skipping the update."
-          exit 0  # Exit gracefully without failing the whole workflow
+          echo "Error: Failed to download the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
+          exit 1  # Exit with failure
         fi
 
-        # Extract the downloaded zip file
+        # Attempt to extract the file
         unzip -o $FILE_PATH -d data/
         if [ $? -ne 0 ]; then
-          echo "Error extracting the file for ${{ steps.current-time.outputs.formattedTime }}."
-          exit 0  # Exit gracefully if extraction fails
+          echo "Error: Failed to extract the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
+          exit 1  # Exit with failure
         fi
-      continue-on-error: true  # Don't stop the workflow on errors here
+
 
     - name: Run data update script
       run: |
