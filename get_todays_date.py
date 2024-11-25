@@ -4,8 +4,7 @@ from after07072024 import download_and_process_equity_bhavcopy  # Replace with a
 
 def get_today_date():
     # Get today's date in YYYYMMDD format
-    # return datetime.today().strftime('%Y%m%d')
-    return (datetime.today() - timedelta(days=1)).strftime('%Y%m%d')
+    return datetime.today().strftime('%Y%m%d')
 
 
 if __name__ == "__main__":

@@ -33,12 +33,16 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: 'pypy3.9'
+
+    # Install dependencies
+    - name: Install dependencies from requirements.txt
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
         
     # Run data update script
     - name: Run data update script
       run: |
-        pip install --upgrade pip
-        pip install requests pandas urllib3
         python3 get_todays_date.py
 
     # Configure Git and push changes to a new branch
@@ -50,7 +54,7 @@ jobs:
         git config user.name "github-actions[bot]"
 
         # Create a new branch
-        BRANCH_NAME="update-${{ steps.current-time.outputs.formattedTime }}"
+        BRANCH_NAME=update-data-branch
         git checkout -b $BRANCH_NAME
 
         # Add and commit changes
