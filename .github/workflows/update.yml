@@ -2,7 +2,7 @@ name: Update Equity Data
 
 on:
   schedule:
-    # This runs at 6 PM UTC (11:30 PM IST) on weekdays (Monday to Friday)
+    # Runs at 6 PM UTC (11:30 PM IST) on weekdays (Monday to Friday)
     - cron: '0 18 * * 1-5'
   push:
     branches:
@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Get current date in YYYYMMDD format
     - name: Get current date
       uses: josStorer/get-current-time@v2
       id: current-time
@@ -21,33 +22,72 @@ jobs:
         format: "YYYYMMDD"
         timezone: 'Asia/Kolkata'
 
+    # Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: 1
 
+    # Set up Python environment
     - name: Set up Python environment
       uses: actions/setup-python@v4
       with:
         python-version: 'pypy3.9'
 
+    # Install dependencies
     - name: Install dependencies from requirements.txt
       run: |
         pip install --upgrade pip
         pip install -r requirements.txt
 
-
-    - name: Run data update script
+    # Download and extract data file
+    - name: Download and extract data file
       run: |
-        python3 get_todays_date.py
+        FILE_URL="https://archives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_${{ steps.current-time.outputs.formattedTime }}_F_0000.csv.zip"
+        FILE_PATH="data/BhavCopy_${{ steps.current-time.outputs.formattedTime }}.zip"
 
-    - name: Commit changes
+        echo "Attempting to download file: $FILE_URL"
+
+        curl --fail --silent --show-error --output $FILE_PATH $FILE_URL
+        if [ $? -ne 0 ]; then
+          echo "Error: Failed to download the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
+          exit 1
+        fi
+
+        unzip -o $FILE_PATH -d data/
+        if [ $? -ne 0 ]; then
+          echo "Error: Failed to extract the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
+          exit 1
+
+    # Run data update script
+    - name: Run data update script
+      run: python3 get_todays_date.py
+
+    # Configure Git and push changes to a new branch
+    - name: Push changes to a branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git config user.name "github-actions[bot]"
+
+        # Create a new branch
+        BRANCH_NAME="update-${{ steps.current-time.outputs.formattedTime }}"
+        git checkout -b $BRANCH_NAME
+
+        # Add and commit changes
         git add -A
         git commit -m "Updated data for ${{ steps.current-time.outputs.formattedTime }}"
-        git push origin main
 
-    - name: Verify commit and push
-      run: git log -1
+        # Push the new branch
+        git push origin $BRANCH_NAME
+
+    # Create a pull request
+    - name: Create a pull request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: "update-${{ steps.current-time.outputs.formattedTime }}"
+        title: "Update Equity Data for ${{ steps.current-time.outputs.formattedTime }}"
+        body: "This pull request updates the equity data for ${{ steps.current-time.outputs.formattedTime }}."
+        base: main
