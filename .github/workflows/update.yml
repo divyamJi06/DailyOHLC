@@ -33,35 +33,13 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: 'pypy3.9'
-
-    # Install dependencies
-    - name: Install dependencies from requirements.txt
-      run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
-
-    # Download and extract data file
-    - name: Download and extract data file
-      run: |
-        FILE_URL="https://archives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_${{ steps.current-time.outputs.formattedTime }}_F_0000.csv.zip"
-        FILE_PATH="data/BhavCopy_${{ steps.current-time.outputs.formattedTime }}.zip"
-
-        echo "Attempting to download file: $FILE_URL"
-
-        curl --fail --silent --show-error --output $FILE_PATH $FILE_URL
-        if [ $? -ne 0 ]; then
-          echo "Error: Failed to download the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
-          exit 1
-        fi
-
-        unzip -o $FILE_PATH -d data/
-        if [ $? -ne 0 ]; then
-          echo "Error: Failed to extract the file for ${{ steps.current-time.outputs.formattedTime }}. Stopping the workflow."
-          exit 1
-
+        
     # Run data update script
     - name: Run data update script
-      run: python3 get_todays_date.py
+      run: |
+        pip install --upgrade pip
+        pip install requests pandas urllib3
+        python3 get_todays_date.py
 
     # Configure Git and push changes to a new branch
     - name: Push changes to a branch
