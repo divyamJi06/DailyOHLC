@@ -15,4 +15,4 @@ if __name__ == "__main__":
     today_date = get_today_date()
     output_path = "data"
     download_and_process_equity_bhavcopy(today_date,output_path)
-    sortDataForToday(output_path, today_date, "individual_stock_ohlc_data")
+    # sortDataForToday(output_path, today_date, "individual_stock_ohlc_data")
