@@ -1,5 +1,5 @@
 requests
 pandas
 urllib3
-psycopg2
+psycopg2-binary
 # Add other dependencies here

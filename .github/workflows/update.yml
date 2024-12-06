@@ -34,12 +34,21 @@ jobs:
       with:
         python-version: 'pypy3.9'
 
+    # Cache Python dependencies
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     # Install dependencies
     - name: Install dependencies from requirements.txt
       run: |
         pip install --upgrade pip
         pip install -r requirements.txt
-        
+
     # Run data update script
     - name: Run data update script
       env:
