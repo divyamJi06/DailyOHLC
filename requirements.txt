@@ -2,4 +2,5 @@ requests
 pandas
 urllib3
 psycopg2-binary
+python-dotenv
 # Add other dependencies here
