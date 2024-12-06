@@ -165,6 +165,7 @@ def download_and_process_equity_bhavcopy(date_str, output_path = "data"):
         print(f"Processed file saved at: {renamed_file_path}")
     except Exception as e:
         print(f"Error processing the file for {date_str}: {e}")
+        raise e
 
 # if __name__ == "__main__":
 #     # Example usage: specify a date to process
