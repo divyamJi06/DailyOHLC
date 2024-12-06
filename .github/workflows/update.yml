@@ -28,11 +28,11 @@ jobs:
       with:
         fetch-depth: 1
 
-    # Set up Python environment
+    # Set up Python environment (use CPython instead of PyPy)
     - name: Set up Python environment
       uses: actions/setup-python@v4
       with:
-        python-version: 'pypy3.9'
+        python-version: '3.9'  # Use standard Python version instead of pypy3.9
 
     # Cache Python dependencies
     - name: Cache Python dependencies
