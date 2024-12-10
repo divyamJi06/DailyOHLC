@@ -55,7 +55,7 @@ def push_to_db(folder_path):
                 cursor.execute("SELECT id FROM company WHERE nse_code = %s", (nse_code,))
                 company = cursor.fetchone()
                 if not company:
-                    print(f"Company with NSE code {nse_code} not found.")
+                    # print(f"Company with NSE code {nse_code} not found.")
                     continue
 
                 company_id = company[0]
@@ -73,7 +73,7 @@ def push_to_db(folder_path):
                             (company_id, date),
                         )
                         if cursor.fetchone():
-                            print(f"Data for {nse_code} on {date} already exists. Skipping...")
+                            # print(f"Data for {nse_code} on {date} already exists. Skipping...")
                             continue
 
                         # Add record to the batch buffer
@@ -101,7 +101,7 @@ def push_to_db(folder_path):
                             print(f"Inserted {len(batch_buffer)} records into the database.")
                             batch_buffer.clear()  # Clear the buffer after insertion
 
-                print(f"Data for {nse_code} processed successfully.")
+                # print(f"Data for {nse_code} processed successfully.")
 
         # Insert remaining records in the buffer
         if batch_buffer:
@@ -127,8 +127,7 @@ def push_to_db(folder_path):
 
 
 if __name__ == "__main__":
-    # today_date = get_today_date()
-    today_date = "20241206"
+    today_date = get_today_date()
     output_path = "data"
     try:
         # Download and process the bhavcopy
